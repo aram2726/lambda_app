@@ -133,3 +133,6 @@ dmypy.json
 
 # zip
 src.zip
+
+# ci
+.ci/terraform/.terraform*
