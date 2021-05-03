@@ -2,7 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 from typing import Optional, Dict
 
-from packages import boto3
+import boto3
 
 
 class AbstractBaseDBClient(metaclass=ABCMeta):
