@@ -136,3 +136,6 @@ src.zip
 
 # ci
 .ci/terraform/.terraform*
+.ci/terraform/*.tfstate
+.ci/terraform/*.tfstate.backup
+
