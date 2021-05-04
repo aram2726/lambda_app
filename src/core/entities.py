@@ -25,9 +25,9 @@ class AbstractBaseEntity(metaclass=ABCMeta):
 
     @property
     def date(self):
-        if self._date is None:
-            return datetime.strftime(self._date, "%Y-%m-%d, %H:%M:%S")
-        return self._date
+        if isinstance(self._date, str):
+            return self._date
+        return datetime.strftime(self._date, "%Y-%m-%d, %H:%M:%S")
 
 
 class AnnouncementEntity(AbstractBaseEntity):
