@@ -9,11 +9,11 @@ class TestAnnouncementRepository(TestCase):
                      {"uuid": 2, "title": "title2", "description": "description2"}]
 
     def setUp(self) -> None:
-        db = Mock(select_all=Mock(return_value=self.announcements))
+        db = Mock(select_all=Mock(return_value=(self.announcements, None)))
         self.repo = AnnouncementRepository(db=db)
 
     def test_get_all_should_return_list_with_same_entities(self):
-        member_entities = self.repo.get_all()
+        member_entities, _ = self.repo.get_all()
 
         self.repo.db.select_all.assert_called_once()
         assert len(member_entities) == 2

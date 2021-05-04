@@ -20,12 +20,12 @@ class BaseTestUseCase(TestCase):
 class TestListAnnouncementUseCase(BaseTestUseCase):
     def setUp(self) -> None:
         super().setUp()
-        self.repo.get_all = Mock(return_value=self.announcements)
+        self.repo.get_all = Mock(return_value=(self.announcements, None))
         self.use_case = ListAnnouncementUseCase(self.response, self.repo)
 
     def test_execute(self):
         self.use_case.execute()
-        assert self.response.data == bytes(json.dumps(self.announcements), encoding="UTF-8")
+        assert self.response.data == bytes(json.dumps({"data": self.announcements, "next": None}), encoding="UTF-8")
 
 
 class TestCreateAnnouncementUseCase(BaseTestUseCase):
