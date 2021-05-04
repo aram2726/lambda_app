@@ -49,3 +49,4 @@ class CreateAnnouncementUseCase(AbstractBaseUseCase):
 
     def execute(self):
         self._repo.insert(self._data.serialize())
+        self._response.data["data"] = self._data
