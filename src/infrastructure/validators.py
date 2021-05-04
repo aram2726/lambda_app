@@ -24,6 +24,7 @@ class AnnouncementValidator(AbstractBaseValidator):
             if isinstance(exc, AppException):
                 self.errors.append(exc.args[0])
             else:
-                self.errors.append({"message": "Invalid arguments."})
+                msg = " ".join(str(exc).split(" ")[1:])
+                self.errors.append({"message": msg})
             return False
         return True

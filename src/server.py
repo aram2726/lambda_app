@@ -1,9 +1,13 @@
+import sys
+sys.path.append(".")
+
+
 from flask import Flask, Response
 from flask import request
 
-from src.infrastructure.controllers import AnnouncementController
-from src.infrastructure.requests import LambdaRequest
-from src.infrastructure.responses import LambdaResponse
+from infrastructure.controllers import AnnouncementController
+from infrastructure.requests import LambdaRequest
+from infrastructure.responses import LambdaResponse
 
 
 app = Flask("Announcements")
@@ -27,3 +31,7 @@ def create_announcements():
     data = controller.response.data
     status = controller.response.status
     return Response(response=data, status=status)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

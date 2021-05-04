@@ -2,6 +2,7 @@ from abc import ABCMeta
 from datetime import datetime
 from typing import Dict
 from typing import Optional
+from uuid import uuid4
 
 
 class AbstractBaseEntity(metaclass=ABCMeta):
@@ -24,7 +25,9 @@ class AbstractBaseEntity(metaclass=ABCMeta):
 
     @property
     def date(self):
-        return datetime.strftime(self._date, "%Y-%m-%d, %H:%M:%S")
+        if self._date is None:
+            return datetime.strftime(self._date, "%Y-%m-%d, %H:%M:%S")
+        return self._date
 
 
 class AnnouncementEntity(AbstractBaseEntity):
@@ -38,6 +41,12 @@ class AnnouncementEntity(AbstractBaseEntity):
         super().__init__(uuid, date)
         self._title = title
         self._description = description
+
+    @property
+    def uuid(self):
+        if self._uuid is None:
+            return str(uuid4())
+        return self._uuid
 
     @property
     def title(self) -> str:

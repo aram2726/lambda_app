@@ -139,3 +139,5 @@ src.zip
 .ci/terraform/*.tfstate
 .ci/terraform/*.tfstate.backup
 
+# local
+docker/
