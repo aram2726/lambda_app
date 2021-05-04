@@ -16,9 +16,9 @@ class TestAnnouncementController(TestCase):
         self.controller._announcements_repo = self.repo
 
     def test_list(self):
-        self.repo.get_all = Mock(return_value=self.announcements["Items"])
+        self.repo.get_all = Mock(return_value=(self.announcements["Items"], None))
         self.controller.list()
-        assert self.response.data == self.announcements["Items"]
+        assert self.response.data["data"] == self.announcements["Items"]
         assert self.response.status == 200
 
     def test_insert(self):

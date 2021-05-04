@@ -36,11 +36,7 @@ class DynamoDBClient(AbstractBaseDBClient):
         if self._client is None:
             self._client = boto3.resource(
                 'dynamodb',
-                endpoint_url='http://localhost:8000/',
-                region_name='us-east-1',
-                aws_access_key_id='dummy_access_key',
-                aws_secret_access_key='dummy_secret_key',
-                verify=False
+                endpoint_url='http://localhost:8000/'
             )
         return self._client
 
@@ -56,7 +52,7 @@ class DynamoDBClient(AbstractBaseDBClient):
             AttributeDefinitions=[
                 {
                     'AttributeName': 'uuid',
-                    'AttributeType': 'N'
+                    'AttributeType': 'S'
                 },
             ],
             ProvisionedThroughput={
@@ -75,11 +71,11 @@ class DynamoDBClient(AbstractBaseDBClient):
         kwargs = {
             "TableName": table_name
         }
-        # if limit:
-        #     kwargs["Limit"] = limit
+        if limit:
+            kwargs["Limit"] = limit
 
-        # if after:
-        #     kwargs["ExclusiveStartKey"] = after
+        if after:
+            kwargs["ExclusiveStartKey"] = after
 
         if order:
             kwargs["ScanIndexForward"] = True if order == "asc" else False
@@ -89,16 +85,8 @@ class DynamoDBClient(AbstractBaseDBClient):
         return response['Items'], response.get("LastEvaluatedKey")
 
     def insert(self, table_name: str, data: Dict):
-        content = {key: {"S": data[key]} for key in data if data.get(key)}
         table = self.client.Table(table_name)
-        item = {key: data[key] for key in data if data.get(key)}
-        print(item)
-        print(content)
-        table.put_item(
-            Item={
-                "title": {"S": item["title"]},
-                "description": {"S": item["description"]},
-                "data": {"S": item["date"]}
-            },
-            TableName=table_name
+        response = table.put_item(
+            Item=data
         )
+        return response
