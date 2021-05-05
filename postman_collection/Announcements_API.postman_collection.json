@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "736444e4-0f20-4a59-9b03-ffbecfe27f6e",
+		"name": "Announcements API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List Announcements",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000/list",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create record successfully",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "Story11",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "long description11",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/create",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Paginated List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/list?after=f8ba1fd5-c257-4ec1-beb0-3f9702b1b645",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"list"
+					],
+					"query": [
+						{
+							"key": "after",
+							"value": "f8ba1fd5-c257-4ec1-beb0-3f9702b1b645"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create with failure",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "Title",
+							"value": "title",
+							"type": "text"
+						},
+						{
+							"key": "Description",
+							"value": "Description",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:5000/create",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,29 +1,7 @@
-
-
-resource "aws_iam_role" "iam_for_lambda" {
-  name = "iam_for_lambda"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
 resource "aws_lambda_function" "announcements" {
   function_name = "announcements_app"
-  role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "src.api.Main"
+  role = aws_iam_role.LambdaExecutionRole.arn
+  handler = "src.api.Main"
   timeout = 30
 
   # TODO: add role for DynamoDB
@@ -35,5 +13,59 @@ resource "aws_lambda_function" "announcements" {
   source_code_hash = filebase64sha256("../../src.zip")
 
   runtime = "python3.8"
+}
+
+resource "aws_iam_role" "LambdaExecutionRole" {
+ name = "lambda-execution-role"
+ path = "/"
+ assume_role_policy = <<EOF
+  {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Sid": "",
+         "Effect": "Allow",
+         "Principal": {
+            "Service": "lambda.amazonaws.com"
+         },
+         "Action": "sts:AssumeRole"
+       }
+     ]
+  }
+EOF
+}
+
+resource "aws_iam_role_policy" "dynamodb" {
+ name = "dynamo-policy"
+ role = aws_iam_role.LambdaExecutionRole.id
+
+ policy = <<EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowLambdaFunctionInvocation",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunction"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "APIAccessForDynamoDBStreams",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:DescribeStream",
+                "dynamodb:ListStreams"
+            ],
+            "Resource": "arn:aws:dynamodb:*"
+        }
+    ]
+  }
+  EOF
 }
 

@@ -3,6 +3,7 @@ from typing import Any
 from typing import Optional
 
 from src.core.entities import AnnouncementEntity
+from src.core.responses import CODE_BAD_REQUEST
 from src.core.responses import CODE_CREATED
 from src.core.responses import CODE_OK
 from src.core.usecases import CreateAnnouncementUseCase
@@ -67,13 +68,13 @@ class AnnouncementController(AbstractBaseHttpController):
         return self._validator
 
     def list(self):
-        uc = ListAnnouncementUseCase(self.response, self.announcements_repo)
+        uc = ListAnnouncementUseCase(self.response, self.announcements_repo, **self.request.data)
         uc.execute()
         self.response.status = CODE_OK
 
     def create(self):
         if not self.validator.is_valid():
-            self.response.status = 400
+            self.response.status = CODE_BAD_REQUEST
             self.response.data = self.validator.errors
             return
 

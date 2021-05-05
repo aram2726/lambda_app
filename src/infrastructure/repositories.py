@@ -21,7 +21,9 @@ class AnnouncementRepository(BaseManageableRepository):
     def db(self):
         return self._db
 
-    def get_all(self, after=0, limit=DEFAULT_LIMIT, order=None) -> Tuple[List[AnnouncementEntity], str]:
+    def get_all(
+            self, after: str = "", limit: int = DEFAULT_LIMIT, order: str = None
+    ) -> Tuple[List[AnnouncementEntity], str]:
         data, next_page = self.db.select_all(self.table, limit, after, order)
         return [AnnouncementEntity(**item) for item in data], next_page
 

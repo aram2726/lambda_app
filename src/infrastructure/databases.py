@@ -65,22 +65,23 @@ class DynamoDBClient(AbstractBaseDBClient):
             self,
             table_name: str,
             limit: Optional[int] = None,
-            after: Optional[int] = None,
+            after: Optional[str] = None,
             order: Optional[str] = None
     ):
         kwargs = {
-            "TableName": table_name
+            "TableName": table_name,
         }
+        table = self.client.Table(table_name)
+
         if limit:
             kwargs["Limit"] = limit
 
         if after:
-            kwargs["ExclusiveStartKey"] = after
+            kwargs["ExclusiveStartKey"] = {"uuid": after}
 
         if order:
             kwargs["ScanIndexForward"] = True if order == "asc" else False
 
-        table = self.client.Table(table_name)
         response = table.scan(**kwargs)
         return response['Items'], response.get("LastEvaluatedKey")
 

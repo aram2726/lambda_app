@@ -4,6 +4,7 @@ from typing import Optional
 
 from src.core.entities import AnnouncementEntity
 from src.core.repositories import BaseManageableRepository
+from src.core.repositories import DEFAULT_LIMIT
 from src.core.responses import AbstractBaseResponse
 
 
@@ -23,8 +24,8 @@ class ListAnnouncementUseCase(AbstractBaseUseCase):
             self,
             response: AbstractBaseResponse,
             repo: BaseManageableRepository,
-            after: Optional[int] = None,
-            limit: Optional[int] = None,
+            after: Optional[str] = "",
+            limit: Optional[int] = DEFAULT_LIMIT,
             order: Optional[str] = None
     ):
         super().__init__(response, repo)
@@ -37,6 +38,7 @@ class ListAnnouncementUseCase(AbstractBaseUseCase):
         response = {
             "data": data,
             "next": next_page,
+            "count": len(data)
         }
         self._response.data = response
 
@@ -49,4 +51,4 @@ class CreateAnnouncementUseCase(AbstractBaseUseCase):
 
     def execute(self):
         self._repo.insert(self._data.serialize())
-        self._response.data["data"] = self._data
+        self._response.data = {"data": self._data}

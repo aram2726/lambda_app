@@ -15,7 +15,7 @@ app = Flask("Announcements")
 
 @app.route("/list")
 def list_announcements():
-    lambda_request = LambdaRequest(request.form, {"identity": None})
+    lambda_request = LambdaRequest(dict(request.args), {"identity": None})
     controller = AnnouncementController(lambda_request, LambdaResponse())
     controller.list()
     data = controller.response.data

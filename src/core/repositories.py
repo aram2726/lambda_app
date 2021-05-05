@@ -7,7 +7,7 @@ DEFAULT_LIMIT = 10
 class BaseReadOnlyRepository(metaclass=ABCMeta):
 
     @abstractmethod
-    def get_all(self, after: int = 0, limit: int = DEFAULT_LIMIT, order: str = None):
+    def get_all(self, after: str = "", limit: int = DEFAULT_LIMIT, order: str = None):
         raise NotImplementedError
 
 
