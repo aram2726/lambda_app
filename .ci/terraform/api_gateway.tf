@@ -1,68 +1,89 @@
-resource "aws_api_gateway_rest_api" "announcement_api" {
-  body = jsonencode({
-    openapi = "3.0.1"
-    info = {
-      title   = "announcement_api"
-      version = "1.0"
-    }
-    paths = {
-      "/list-announcements" = {
-        get = {
-          x-amazon-apigateway-integration = {
-            httpMethod           = "GET"
-            payloadFormatVersion = "1.0"
-            type                 = "HTTP_PROXY"
-            uri                  = "https://ip-ranges.amazonaws.com/ip-ranges.json"
-          }
-        }
-      },
-      "/create-announcement" = {
-        post = {
-          x-amazon-apigateway-integration = {
-            httpMethod           = "POST"
-            payloadFormatVersion = "1.0"
-            type                 = "HTTP_PROXY"
-            uri                  = "https://ip-ranges.amazonaws.com/ip-ranges.json"
-          }
-        }
-      }
-    }
-  })
-  name = "announcement_api"
+resource "aws_api_gateway_rest_api" "api" {
+  name = "announcements_api"
 }
 
-
-resource "aws_api_gateway_resource" "announcement_api" {
-  parent_id   = aws_api_gateway_rest_api.announcement_api.root_resource_id
-  path_part   = "announcement_api"
-  rest_api_id = aws_api_gateway_rest_api.announcement_api.id
+resource "aws_api_gateway_resource" "resource" {
+  path_part   = "resource"
+  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.api.id
 }
 
-resource "aws_api_gateway_method" "announcement_api" {
-  authorization = "NONE"
+resource "aws_api_gateway_method" "method_get" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.resource.id
   http_method   = "GET"
-  resource_id   = aws_api_gateway_resource.announcement_api.id
-  rest_api_id   = aws_api_gateway_rest_api.announcement_api.id
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_method" "method_post" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.resource.id
+  http_method   = "POST"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "integration" {
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.resource.id
+  http_method             = aws_api_gateway_method.method_get.http_method
+  integration_http_method = "GET"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.lambda.invoke_arn
 }
 
 
-resource "aws_iam_role" "api_gateway" {
- name = "announcement_api"
- path = "/"
+resource "aws_api_gateway_integration" "integration" {
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.resource.id
+  http_method             = aws_api_gateway_method.method_post.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.lambda.invoke_arn
+}
 
- assume_role_policy = <<EOF
-  {
-     "Version": "2012-10-17",
-      "Statement": [
-         {
-           "Sid": "",
-           "Effect": "Allow",
-           "Principal": {
-           "Service": "apigateway.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-        }
-     ]
-  }
-  EOF
+# Lambda
+resource "aws_lambda_permission" "apigw_lambda" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
+  source_arn = "arn:aws:execute-api:us-east-2:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method.http_method}${aws_api_gateway_resource.resource.path}"
+}
+
+resource "aws_lambda_function" "lambda" {
+  filename      = "../../src.zip"
+  function_name = "announcements"
+  role          = aws_iam_role.role.arn
+  handler       = "src.api.main"
+  runtime       = "python3.8"
+  timeout       = 30
+
+  # The filebase64sha256() function is available in Terraform 0.11.12 and later
+  # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
+  # source_code_hash = "${base64sha256(file("lambda.zip"))}"
+  source_code_hash = filebase64sha256("../../src.zip")
+
+}
+
+# IAM
+resource "aws_iam_role" "role" {
+  name = "myrole"
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+POLICY
 }

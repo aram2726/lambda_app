@@ -141,3 +141,4 @@ src.zip
 
 # local
 docker/
+.DS_Store

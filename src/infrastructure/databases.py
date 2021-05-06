@@ -35,8 +35,7 @@ class DynamoDBClient(AbstractBaseDBClient):
     def client(self):
         if self._client is None:
             self._client = boto3.resource(
-                'dynamodb',
-                endpoint_url='http://localhost:8000/'
+                'dynamodb'
             )
         return self._client
 

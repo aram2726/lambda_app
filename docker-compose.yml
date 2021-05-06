@@ -9,3 +9,8 @@ services:
     volumes:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
+
+  lambda-local:
+    build: .
+    ports:
+      - 9000:8080

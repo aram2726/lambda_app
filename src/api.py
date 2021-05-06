@@ -17,3 +17,19 @@ def create_view(event: dict, context: dict):
 
     controller.create()
     return controller.response
+
+
+def main(event: dict, context: dict):
+    handlers = {
+        "list": list_view,
+        "create": create_view
+    }
+    route = event.pop("route")
+    handler = handlers.get(route)
+    if handler:
+        return handler(event, context)
+    return "Not Found"
+
+
+if __name__ == '__main__':
+    main(event, context)
