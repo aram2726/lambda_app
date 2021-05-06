@@ -7,6 +7,6 @@ resource "aws_dynamodb_table" "announcements" {
   name = "announcements"
   attribute {
     name = "uuid"
-    type = "N"
+    type = "S"
   }
 }

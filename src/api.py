@@ -8,7 +8,7 @@ def list_view(event: dict, context: dict):
     controller = AnnouncementController(request, LambdaResponse())
 
     controller.list()
-    return controller.response
+    return controller.response.data
 
 
 def create_view(event: dict, context: dict):
@@ -16,7 +16,7 @@ def create_view(event: dict, context: dict):
     controller = AnnouncementController(request, LambdaResponse())
 
     controller.create()
-    return controller.response
+    return controller.response.data
 
 
 def main(event: dict, context: dict):

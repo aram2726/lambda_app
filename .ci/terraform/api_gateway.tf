@@ -71,3 +71,41 @@ resource "aws_iam_role" "role" {
 }
 POLICY
 }
+
+resource "aws_iam_role_policy" "dynamodb" {
+ name = "dynamo-policy"
+ role = aws_iam_role.role.id
+
+ policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+          "Effect": "Allow",
+          "Action": [
+              "dynamodb:BatchGetItem",
+              "dynamodb:GetItem",
+              "dynamodb:Query",
+              "dynamodb:Scan",
+              "dynamodb:BatchWriteItem",
+              "dynamodb:PutItem",
+              "dynamodb:UpdateItem"
+          ],
+          "Resource": "arn:aws:dynamodb:us-east-2:${data.aws_caller_identity.current.account_id}:*"
+      },
+      {
+          "Effect": "Allow",
+          "Action": [
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+          ],
+          "Resource": "arn:aws:logs:us-east-2:${data.aws_caller_identity.current.account_id}:*"
+      },
+      {
+          "Effect": "Allow",
+          "Action": "logs:CreateLogGroup",
+          "Resource": "*"
+      }
+  ]
+}
+EOF
+}
