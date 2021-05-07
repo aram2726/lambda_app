@@ -40,7 +40,7 @@ paths:
         description: "Announcement object that needs to be added to the store"
         required: true
         schema:
-          $ref: "#/definitions/Anouncement"
+          $ref: "#/definitions/AnouncementCreate"
       responses:
         "405":
           description: "Invalid input"
@@ -72,6 +72,16 @@ paths:
 
 
 definitions:
+  AnouncementCreate:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+      description:
+        type: "string"
+    xml:
+      name: "Anouncement"
+
   Anouncement:
     type: "object"
     properties:
