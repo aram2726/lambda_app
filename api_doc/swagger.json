@@ -1,0 +1,137 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a sample server Announcements server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters.",
+    "version": "1.0.0",
+    "title": "Swagger Announcements",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "petstore.swagger.io",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "announcement",
+      "description": "Everything about your Announcements",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/announcements/create": {
+      "post": {
+        "tags": [
+          "announcement"
+        ],
+        "summary": "Add a new announcement",
+        "description": "",
+        "operationId": "add_announcement",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Announcement object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Anouncement"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/announcements": {
+      "get": {
+        "tags": [
+          "announcement"
+        ],
+        "summary": "List",
+        "description": "Returns a list of announcements",
+        "operationId": "list_announcements",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "description": "ID of announcement to read from",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/AnouncementsList"
+            }
+          },
+          "404": {
+            "description": "Anouncement not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Anouncement": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Anouncement"
+      }
+    },
+    "AnouncementsList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Anouncement"
+      },
+      "xml": {
+        "name": "Anouncement"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
