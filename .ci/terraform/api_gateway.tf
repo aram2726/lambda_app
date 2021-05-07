@@ -1,32 +1,5 @@
 resource "aws_api_gateway_rest_api" "api" {
   name = "announcements_api"
-  body = jsonencode({
-    openapi = "3.0.1"
-    info = {
-      title   = "announcements_api"
-      version = "1.0"
-    }
-    paths = {
-      "/resource_get" = {
-        get = {
-          x-amazon-apigateway-integration = {
-            httpMethod           = "GET"
-            payloadFormatVersion = "1.0"
-            type                 = "HTTP_PROXY"
-            uri                  = "https://ip-ranges.amazonaws.com/ip-ranges.json"
-          }
-        }
-      },
-      "/resource_post": {
-        x-amazon-apigateway-integration = {
-            httpMethod           = "POST"
-            payloadFormatVersion = "1.0"
-            type                 = "HTTP_PROXY"
-            uri                  = "https://ip-ranges.amazonaws.com/ip-ranges.json"
-          }
-      }
-    }
-  })
 }
 
 resource "aws_api_gateway_resource" "resource_get" {
