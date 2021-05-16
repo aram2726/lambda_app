@@ -52,3 +52,17 @@ class CreateAnnouncementUseCase(AbstractBaseUseCase):
     def execute(self):
         self._repo.insert(self._data.serialize())
         self._response.data = {"data": self._data}
+
+
+class GetAnnouncementUseCase(AbstractBaseUseCase):
+
+    def __init__(
+        self,
+        response: AbstractBaseResponse,
+        repo: BaseManageableRepository,
+    ):
+        super().__init__(response, repo)
+
+    def execute(self):
+        response = self._repo.get_one(self.request.data.get("uuid"))
+        self._response.data = {"data": self._data}

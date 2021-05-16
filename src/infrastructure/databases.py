@@ -15,6 +15,10 @@ class AbstractBaseDBClient(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    def select_one(self, pk_field: str, pk_val: str):
+        raise NotImplementedError
+
+    @abstractmethod
     def select_all(
             self,
             table: str,
@@ -25,7 +29,7 @@ class AbstractBaseDBClient(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def insert(self, table: str, data: dict):
+    def insert(self, table_name: str, table: str, data: dict):
         raise NotImplementedError
 
 
@@ -35,7 +39,12 @@ class DynamoDBClient(AbstractBaseDBClient):
     def client(self):
         if self._client is None:
             self._client = boto3.resource(
-                'dynamodb'
+                'dynamodb',
+                # endpoint_url='http://localhost:8000/',
+                # region_name='us-east-1',
+                # aws_access_key_id='dummy_access_key',
+                # aws_secret_access_key='dummy_secret_key',
+                # verify=False
             )
         return self._client
 
@@ -59,6 +68,11 @@ class DynamoDBClient(AbstractBaseDBClient):
                 'WriteCapacityUnits': 10
             }
         )
+
+    def select_one(self, table_name: str, pk_field: str, pk_val: str):
+        table = self.client.Table(table_name)
+        response = table.get_item(Key={pk_field: pk_val})
+        return response["Item"]
 
     def select_all(
             self,

@@ -6,6 +6,7 @@ from src.core.entities import AnnouncementEntity
 from src.core.responses import CODE_BAD_REQUEST
 from src.core.responses import CODE_CREATED
 from src.core.responses import CODE_OK
+from src.core.usecases import GetAnnouncementUseCase
 from src.core.usecases import CreateAnnouncementUseCase
 from src.core.usecases import ListAnnouncementUseCase
 from src.infrastructure.databases import DynamoDBClient
@@ -66,6 +67,9 @@ class AnnouncementController(AbstractBaseHttpController):
         if self._validator is None:
             self._validator = AnnouncementValidator(**self.request.data)
         return self._validator
+
+    def get(self):
+        uc = GetAnnouncementUseCase(self.response, self.announcements_repo, self.request.args)
 
     def list(self):
         uc = ListAnnouncementUseCase(self.response, self.announcements_repo, **self.request.data)

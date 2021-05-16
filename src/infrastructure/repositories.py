@@ -1,3 +1,4 @@
+from typing import Optional
 from typing import List
 from typing import Tuple
 
@@ -12,6 +13,7 @@ class AnnouncementRepository(BaseManageableRepository):
     def __init__(self, db: DynamoDBClient):
         self._db = db
         self._table = "announcements"
+        self._pk_field = "uuid"
 
     @property
     def table(self):
@@ -20,6 +22,14 @@ class AnnouncementRepository(BaseManageableRepository):
     @property
     def db(self):
         return self._db
+
+    def get_one(self, pk_val: str) -> Optional[AnnouncementEntity]:
+        item = self.db.select_one(self.table, self._pk_field, pk_val)
+
+        if not item:
+            return None
+
+        return AnnouncementEntity(**item)
 
     def get_all(
             self, after: str = "", limit: int = DEFAULT_LIMIT, order: str = None
