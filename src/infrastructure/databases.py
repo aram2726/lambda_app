@@ -40,11 +40,8 @@ class DynamoDBClient(AbstractBaseDBClient):
         if self._client is None:
             self._client = boto3.resource(
                 'dynamodb',
-                # endpoint_url='http://localhost:8000/',
-                # region_name='us-east-1',
-                # aws_access_key_id='dummy_access_key',
-                # aws_secret_access_key='dummy_secret_key',
-                # verify=False
+                endpoint_url='http://localhost:8000/',
+                region_name='us-east-1',
             )
         return self._client
 

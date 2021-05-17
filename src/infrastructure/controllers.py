@@ -69,7 +69,9 @@ class AnnouncementController(AbstractBaseHttpController):
         return self._validator
 
     def get(self):
-        uc = GetAnnouncementUseCase(self.response, self.announcements_repo, self.request.args)
+        uc = GetAnnouncementUseCase(self.response, self.announcements_repo, self.request.data)
+        uc.execute()
+        self.response.status = CODE_OK
 
     def list(self):
         uc = ListAnnouncementUseCase(self.response, self.announcements_repo, **self.request.data)

@@ -13,11 +13,11 @@ from infrastructure.responses import LambdaResponse
 app = Flask("Announcements")
 
 
-@app.route("/account/<uuid>")
+@app.route("/announcement/<uuid>")
 def get_announcements(uuid: str):
-    lambda_request = LambdaRequest(dict(request.args, uuid=uuid), {"identity": None})
+    lambda_request = LambdaRequest({"uuid": uuid}, {"identity": None})
     controller = AnnouncementController(lambda_request, LambdaResponse())
-    controller.list()
+    controller.get()
     data = controller.response.data
     status = controller.response.status
     return Response(response=data, status=status)
