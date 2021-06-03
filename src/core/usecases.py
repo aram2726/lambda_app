@@ -1,6 +1,6 @@
 from abc import ABCMeta
 from abc import abstractmethod
-from typing import Optional
+from typing import Dict, Optional
 
 from src.core.entities import AnnouncementEntity
 from src.core.repositories import BaseManageableRepository
@@ -60,9 +60,11 @@ class GetAnnouncementUseCase(AbstractBaseUseCase):
         self,
         response: AbstractBaseResponse,
         repo: BaseManageableRepository,
+        data: Dict
     ):
         super().__init__(response, repo)
+        self.data = data
 
     def execute(self):
-        response = self._repo.get_one(self.request.data.get("uuid"))
-        self._response.data = {"data": self._data}
+        response = self._repo.get_one(self.data.get("uuid"))
+        self._response.data = {"data": response}
