@@ -56,7 +56,7 @@ resource "aws_lambda_permission" "apigw_lambda" {
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:us-east-2:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.api.id}/*"
+  source_arn = "arn:aws:lambda:us-east-2:${data.aws_caller_identity.current.account_id}:function/*"
 }
 
 resource "aws_lambda_function" "lambda" {
